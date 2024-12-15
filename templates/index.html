@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCTranslator</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        async function translateText(direction) {
+            const textAreaId = direction === 'en-to-fr' ? 'english-text' : 'french-text';
+            const outputId = direction === 'en-to-fr' ? 'french-text' : 'english-text';
+            const sourceLang = direction === 'en-to-fr' ? 'en' : 'fr';
+            const targetLang = direction === 'en-to-fr' ? 'fr' : 'en';
+
+            const text = document.getElementById(textAreaId).value;
+
+            const response = await fetch('/translate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text, source_lang: sourceLang, target_lang: targetLang })
+            });
+
+            const data = await response.json();
+            document.getElementById(outputId).value = data.translated_text;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>FCTranslator</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>English to French</h2>
+            <textarea id="english-text" placeholder="Type in English..." rows="5"></textarea>
+            <button onclick="translateText('en-to-fr')">Translate to French</button>
+        </section>
+
+        <section>
+            <h2>French to English</h2>
+            <textarea id="french-text" placeholder="Type in French..." rows="5"></textarea>
+            <button onclick="translateText('fr-to-en')">Translate to English</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Made by FrenchConnect</p>
+    </footer>
+</body>
+</html>
